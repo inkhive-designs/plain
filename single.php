@@ -10,14 +10,14 @@
 get_header();
 ?>
 
-	<div id="primary" class="content-area">
+	<div id="primary" class="content-area col-md-8 col-sm-8 col-xs-12">
 		<main id="main" class="site-main">
 
 		<?php
 		while ( have_posts() ) :
 			the_post();
 
-			get_template_part( 'template-parts/content', get_post_type() );
+			get_template_part( 'content/content', get_post_type() );
 
 			the_post_navigation();
 

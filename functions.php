@@ -67,6 +67,9 @@ if ( ! function_exists( 'plain_setup' ) ) :
 
 		// Add theme support for selective refresh for widgets.
 		add_theme_support( 'customize-selective-refresh-widgets' );
+		
+		// Add Image Size for Thumbnails
+		add_image_size( 'plain-featured', 500, 350, true );
 
 		/**
 		 * Add support for core custom logo.
@@ -116,17 +119,104 @@ function plain_widgets_init() {
 }
 add_action( 'widgets_init', 'plain_widgets_init' );
 
+function plain_time_ago() {
+	return human_time_diff( get_the_time( 'U' ), current_time( 'timestamp' ) ).' '.__( 'ago', 'plain' );
+}
+
+class Plain_Comment_Walker extends Walker_Comment {
+		var $tree_type = 'comment';
+		var $db_fields = array( 'parent' => 'comment_parent', 'id' => 'comment_ID' );
+ 
+		// constructor – wrapper for the comments list
+		function __construct() { ?>
+
+			<li class="comments-list">
+
+		<?php }
+
+		// start_lvl – wrapper for child comments list
+		function start_lvl( &$output, $depth = 0, $args = array() ) {
+			$GLOBALS['comment_depth'] = $depth + 2; ?>
+			
+			<ol class="child-comments comments-list">
+
+		<?php }
+	
+		// end_lvl – closing wrapper for child comments list
+		function end_lvl( &$output, $depth = 0, $args = array() ) {
+			$GLOBALS['comment_depth'] = $depth + 2; ?>
+
+			</ol>
+
+		<?php }
+
+		// start_el – HTML for comment template
+		function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
+			$depth++;
+			$GLOBALS['comment_depth'] = $depth;
+			$GLOBALS['comment'] = $item;
+			$parent_class = ( empty( $args['has_children'] ) ? '' : 'parent' ); 
+	
+			if ( 'article' == $args['style'] ) {
+				$tag = 'article';
+				$add_below = 'comment';
+			} else {
+				$tag = 'article';
+				$add_below = 'comment';
+			} ?>
+
+			<li <?php comment_class(empty( $args['has_children'] ) ? '' :'parent') ?> id="comment-<?php comment_ID() ?>" itemprop="comment" itemscope itemtype="http://schema.org/Comment">
+				<div class="comment-container">
+					<figure class="gravatar"><?php echo get_avatar( $item, 65, '', 'Author’s gravatar' ); ?></figure>
+					<div class="comment-data">
+						<div class="comment-meta post-meta" role="complementary">
+							<h2 class="comment-author">
+								<a class="comment-author-link" href="<?php comment_author_url(); ?>" itemprop="author"><?php comment_author(); ?></a>
+							</h2>
+							<span><?php echo plain_time_ago(); ?></span>
+							<?php edit_comment_link('<p class="comment-meta-item">Edit this comment</p>','',''); ?>
+							<?php if ($item->comment_approved == '0') : ?>
+							<p class="comment-meta-item">Your comment is awaiting moderation.</p>
+							<?php endif; ?>
+						</div>
+						<div class="comment-content post-content" itemprop="text">
+							<?php comment_text() ?>
+							<?php comment_reply_link(array_merge( $args, array('add_below' => $add_below, 'depth' => $depth, 'max_depth' => $args['max_depth']))) ?>
+						</div>
+					</div>
+				</div>
+
+		<?php }
+
+		// end_el – closing HTML for comment template
+		function end_el(&$output, $item, $depth = 0, $args = array() ) { ?>
+
+			</li>
+
+		<?php }
+
+		// destructor – closing wrapper for the comments list
+		function __destruct() { ?>
+
+			</li>
+		
+		<?php }
+
+	}
+
 /**
  * Enqueue scripts and styles.
  */
 function plain_scripts() {
 	wp_enqueue_style( 'plain-styles', get_stylesheet_uri() );
-
-    wp_enqueue_style( 'font-awesome', get_template_directory_uri() . '/imports/font-awesome/css/font-awesome.min.css' );
+	
+	wp_enqueue_style('plain-font', '//fonts.googleapis.com/css?family=Roboto:300,400,700' );
+	
+	wp_enqueue_style('dashicons');
 
     wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/imports/bootstrap/css/bootstrap.min.css' );
 
-    wp_enqueue_style( 'plain-main-theme-styles', get_template_directory_uri() . '/imports/styles/css/main.css', array(), null );
+    wp_enqueue_style( 'plain-main-theme-styles', get_template_directory_uri() . '/imports/css/main.css', array(), null );
 
     wp_enqueue_script( 'plain-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
 
@@ -142,6 +232,16 @@ function plain_scripts() {
 }
 add_action( 'wp_enqueue_scripts', 'plain_scripts' );
 
+function plain_excerpt() {
+	
+	return '...';
+}
+add_filter('excerpt_more', 'plain_excerpt');
+
+function plain_excerpt_length( $length ) {
+	return 20;
+}
+add_filter('excerpt_length','plain_excerpt_length', 999);
 
 /**
  * Implement the Custom Header feature.

@@ -18,10 +18,10 @@
  */
 function plain_custom_header_setup() {
 	add_theme_support( 'custom-header', apply_filters( 'plain_custom_header_args', array(
-		'default-image'          => '',
+		'default-image'          => get_template_directory_uri() . '/imports/img/header.jpg',
 		'default-text-color'     => '000000',
-		'width'                  => 1000,
-		'height'                 => 250,
+		'width'                  => 1920,
+		'height'                 => 500,
 		'flex-height'            => true,
 		'wp-head-callback'       => 'plain_header_style',
         'admin-head-callback'    => 'plain_admin_header_style',

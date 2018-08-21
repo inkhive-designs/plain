@@ -13,47 +13,6 @@
 	-o-transform: @b;
 }
 
-@-webkit-keyframes constantrotation {
-	from {
-		.transform( rotate(0deg); );
-		background: red;
-	}
-	to {
-		.transform( rotate(36deg); );
-		background: blue;
-	}
-}
-@keyframes constantrotation {
-	from {
-		.transform( rotate(0deg); );
-		background: red;
-	}
-	to {
-		.transform( rotate(36deg); );
-		background: blue;
-	}
-}
-.colormixin(@color:false) when not (@color=false){color: @color;}
-.stylemixin(@style:false) when not (@style=false){
-    .style(@style) when (@style=italic) {font-style: @style;}
-    .style(@style) when (@style=bold) {font-weight: @style;}
-    .style(@style);
-}
-.placeholder(@color: false, @style: false){
-    &::-webkit-input-placeholder {
-        .colormixin(@color);
-        .stylemixin(@style);
-    }
-    &:-moz-placeholder {
-        .colormixin(@color);
-        .stylemixin(@style);
-    }
-    &::-moz-placeholder {
-        .colormixin(@color);
-        .stylemixin(@style);
-    }
-    &:-ms-input-placeholder {
-        .colormixin(@color);
-        .stylemixin(@style);
-    }
+.size( @s ) {
+	font-size: @s;
 }

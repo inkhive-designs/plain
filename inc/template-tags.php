@@ -26,7 +26,7 @@ if ( ! function_exists( 'plain_posted_on' ) ) :
 
 		$posted_on = sprintf(
 			/* translators: %s: post date. */
-			esc_html_x( 'Postedn %s', 'post date', 'plain' ),
+			esc_html_x( 'Posted on %s', 'post date', 'plain' ),
 			'<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">' . $time_string . '</a>'
 		);
 

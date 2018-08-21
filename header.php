@@ -46,6 +46,10 @@
                 ?>
             </nav><!-- #site-navigation -->
         </div>
+        
+		<div class="searchform">
+			<?php get_search_form(); ?>
+		</div>
 
 	</header><!-- #masthead -->
 

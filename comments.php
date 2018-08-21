@@ -53,6 +53,7 @@ if ( post_password_required() ) {
 			wp_list_comments( array(
 				'styles'      => 'ol',
 				'short_ping' => true,
+				'walker'	=> new Plain_Comment_Walker
 			) );
 			?>
 		</ol><!-- .comment-list -->
